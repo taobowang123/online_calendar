@@ -3,7 +3,7 @@ class Events(models.Model):
     # The name of table.
     email_address = models.EmailField()
     event = models.CharField(max_length=100)
-    date = models.DateField()
+    # date = models.DateField()
     important_rank = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     note = models.CharField(max_length=100)
