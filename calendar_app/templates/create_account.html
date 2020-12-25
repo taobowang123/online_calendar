@@ -13,9 +13,8 @@
 </head>
 
 <body class="text-center">
-    {{msg}}
     <div id="container">
-
+        <div style="color: red; "><b>{{msg}}</b></div>
         <form id="loginForm" action="/createaccount/" method="post" class="form-signin">
             {% csrf_token %}
             <h1 class="h3 mb-3 font-weight-normal">Create an account</h1>

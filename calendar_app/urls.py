@@ -5,6 +5,10 @@ urlpatterns = [
     path('', views.welcome),
     path('createaccount/', views.create_account,name='create_account'),
     path('welcome/', views.welcome, name='welcome'),
+    path('add_events/', views.addEvents,name='add_events'),
+    path('deleteEvents', views.deleteEvents,name='deleteEvents'),
+    path('editEvents', views.editEvents,name='editEvents'),
+
     # path('login/', views.index,name='login'),
 
     # path('logout/', views.logout, name='logout'),

@@ -1,16 +1,18 @@
 from django.db import models
-class Events(models.Model):
-    # The name of table.
-    email_address = models.EmailField()
-    event = models.CharField(max_length=100)
-    # date = models.DateField()
-    important_rank = models.CharField(max_length=100)
-    address = models.CharField(max_length=100)
-    note = models.CharField(max_length=100)
+from django.contrib.auth.models import User
+import django.utils.timezone as timezone
 
-class User_info(models.Model):
-    email_address=models.EmailField()
-    first_name=models.CharField(max_length=100)
-    last_name=models.CharField(max_length=100)
+# Create your models here.
+EVENT_TYPE = (('active','active'),('old','old'))
+
+class Events(models.Model):
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    date = models.DateField(default = timezone.now)
+    start_time= models.TimeField(default = timezone.now)
+    end_time = models.TimeField(default = timezone.now)
+    event = models.CharField(max_length=100)
+    event_type = models.CharField(max_length=100, choices=EVENT_TYPE,default='active')
+    # def __str__(self):
+    #     return self.description
 
 # Create your models here.
