@@ -1,12 +1,9 @@
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.shortcuts import HttpResponse,render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Events
 from .forms import RecordForm, UserForm
 from django.http import HttpResponse
-from django.contrib import auth
 from calendar_app.models import Events
 
 
@@ -20,10 +17,8 @@ def welcome(request):
     current_user = request.user
     username=current_user.username
     first_name=current_user.first_name
-    # record_form = RecordForm(user=current_user)
-    # user_form = UserForm()
-    records = Events.objects.filter(user=current_user, event_type='active')
-
+    last_name = current_user.last_name
+    records = Events.objects.filter(user=current_user)
     return render(request, 'welcome.html', locals())
 
 #基本功能OK
@@ -51,13 +46,19 @@ def create_account(request):
 
 def addEvents(request):
     user=request.user
+    events=request.POST.get("Events")
+    date=request.POST.get("date")
+    startTime=request.POST.get("starttime")
+    endTime=request.POST.get("endtime")
     Events.objects.create(  # 数据库插入语句
         user=user,
-        event='1222211',
-        event_type='active',
+        date=date,
+        event=events,
+        start_time=startTime,
+        end_time=endTime
     )
     user_list = Events.objects.all()  # 将数据全部展示至html中。
-    return HttpResponse(user_list)
+    return redirect('/')
 
 @login_required
 def deleteEvents(request):
@@ -68,21 +69,50 @@ def deleteEvents(request):
 
 @login_required
 def editEvents(request):
-    if request.method == 'POST':
-        id = request.POST['edit_val']
-        record = Events.objects.get(id=id)
-
-        return render(request, 'app/edit_record.html', locals())
+    user = request.user
+    id = request.POST.get("ID")
+    events=request.POST.get("Events")
+    date=request.POST.get("date")
+    startTime=request.POST.get("starttime")
+    endTime=request.POST.get("endtime")
+    Events.objects.filter(id=id).update(
+        date=date,
+        event=events,
+        start_time=startTime,
+        end_time=endTime
+    )
     return redirect('/')
 
 @login_required
-def searchRecord(request):
+def searchEvents(request):
     if request.method == 'POST':
-        title = request.POST['title']
+        # return HttpResponse('hahaha')
+        title = request.POST['search']
+        # return HttpResponse(title)
         user = request.user
-        records = Events.objects.filter(user=user, title=title)
-        return render(request, 'app/search_events.html', locals())
+        records = Events.objects.filter(user=user, event=title)
+        return render(request, 'welcome.html', locals())
     return redirect('/')
+
+@login_required
+def shareEvents(request):
+    if request.method == 'POST':
+        id = request.POST['share_val']
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data.get('user')
+            record = Events.objects.get(id=id)
+            Events.objects.create(date=record.date, title=record.title,
+                                  description=record.description, user=user)
+    return redirect('/')
+
+@login_required
+def setting(request):
+    first_name = request.POST.get("firstname")
+    surname = request.POST.get("surname")
+    email = request.POST.get("email")
+    password = request.POST.get("password")
+
 
 
 

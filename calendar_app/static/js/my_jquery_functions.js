@@ -1,28 +1,19 @@
-//Deletes a task via an ajax post request
-function deleteTask(timestamp) {
-    var url = "/deleteTask";
-    var time = timestamp;
-    var csrf = $("#delete_icons").attr('csrf-token');
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: {
-            timestamp: time,
-            csrfmiddlewaretoken: csrf
-        },
-        success: function(data) {
-            $("#board").html(data);
-        }
-    });
+//Sets values of the editModal and opens the modal view
+function editModal(eventid, event) {
+    $('#eventttID').val(eventid);
+    $('#editEventtitle').val(event);
 };
 
-//Sets values of the editModal and opens the modal view
-function editModal(task, timestamp, due) {
-    $('.modal-body #editTaskTitle').val(task);
-    $('.modal-body #editTaskDue').val(due);
-    $('.modal-body #taskTimestamp').val(timestamp);
-    $('#editTaskModal').modal('show');
+//Sets the values of the settingsModal and opens the modal view
+function settingsModal(fname, sname, username) {
+    $('.modal-body #settingsFName').val(fname);
+    $('.modal-body #settingsSName').val(sname);
+    $('.modal-body #settingsEmail').val(username);
+    $('#settingsModal').modal('show');
+
 };
+
+
 
 //Sets values of the shareModal and opens the modal view
 function shareModal(task, timestamp, due) {
@@ -39,7 +30,7 @@ function shareListModal(task, timestamp, due) {
 };
 
 //Posts the email address of the share recipient to the django app
-$(document).on("submit", "#shareListForm", function(e) {
+$(document).on("submit", "#shareListForm", function (e) {
     $('#shareTaskModal').modal('hide');
     var recipient = $('#shareUser').val();
     var csrf = $("#shareTaskForm").attr("csrf-token");
@@ -50,7 +41,7 @@ $(document).on("submit", "#shareListForm", function(e) {
             recipient: recipient,
             csrfmiddlewaretoken: csrf
         },
-        success: function(data) {
+        success: function (data) {
             $("#board").html(data);
         }
     });
@@ -59,7 +50,7 @@ $(document).on("submit", "#shareListForm", function(e) {
 
 
 //Updates the task information via an ajax post request
-$(document).on("submit", "#editTaskForm", function(e) {
+$(document).on("submit", "#editTaskForm", function (e) {
     $('#editTaskModal').modal('hide');
     var url = "/editTask"
     var task = $('#editTaskTitle').val();
@@ -75,7 +66,7 @@ $(document).on("submit", "#editTaskForm", function(e) {
             timestamp: timestamp,
             csrfmiddlewaretoken: csrf
         },
-        success: function(data) {
+        success: function (data) {
             $("#board").html(data);
         }
     });
@@ -83,7 +74,7 @@ $(document).on("submit", "#editTaskForm", function(e) {
 });
 
 //Posts the email address of the share recipient to the django app
-$(document).on("submit", "#shareTaskForm", function(e) {
+$(document).on("submit", "#shareTaskForm", function (e) {
     $('#shareTaskModal').modal('hide');
     var url = "/shareTask"
     var task = $('#shareTaskTitle').val();
@@ -101,7 +92,7 @@ $(document).on("submit", "#shareTaskForm", function(e) {
             recipient: recipient,
             csrfmiddlewaretoken: csrf
         },
-        success: function(data) {
+        success: function (data) {
             $("#board").html(data);
         }
     });
@@ -123,7 +114,7 @@ function markAsDone(timestamp) {
                 csrfmiddlewaretoken: csrf,
                 status: "done"
             },
-            success: function(data) {
+            success: function (data) {
                 $("#board").html(data);
             }
         });
@@ -143,23 +134,16 @@ function markAsNotDone(timestamp) {
             csrfmiddlewaretoken: csrf,
             status: "todo"
         },
-        success: function(data) {
+        success: function (data) {
             $("#board").html(data);
         }
     });
 }
 
-//Sets the values of the settingsModal and opens the modal view
-function settingsModal(fname, sname, email) {
-    $('.modal-body #settingsFName').val(fname);
-    $('.modal-body #settingsSName').val(sname);
-    $('.modal-body #settingsEmail').val(email);
-    $('#settingsModal').modal('show');
 
-};
 
 //Posts the values of the settings form to the django app to be updated
-$(document).on("submit", "#settingsForm", function(e) {
+$(document).on("submit", "#settingsForm", function (e) {
     $('#settingsModal').modal('hide');
     var fname = $('#settingsFName').val();
     var sname = $('#settingsSName').val();
@@ -174,7 +158,7 @@ $(document).on("submit", "#settingsForm", function(e) {
             email: email,
             csrfmiddlewaretoken: csrf
         },
-        success: function(data) {
+        success: function (data) {
             $("#userOptions").html(data);
         }
     });

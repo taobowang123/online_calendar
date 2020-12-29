@@ -5,9 +5,12 @@ urlpatterns = [
     path('', views.welcome),
     path('createaccount/', views.create_account,name='create_account'),
     path('welcome/', views.welcome, name='welcome'),
-    path('add_events/', views.addEvents,name='add_events'),
-    path('deleteEvents', views.deleteEvents,name='deleteEvents'),
-    path('editEvents', views.editEvents,name='editEvents'),
+    path('addEvents/', views.addEvents,name='addEvents'),
+    path('deleteEvents/', views.deleteEvents,name='deleteEvents'),
+    path('editEvents/', views.editEvents,name='editEvents'),
+    path('searchEvents/', views.searchEvents,name='searchEvents'),
+    path('shareEvents/', views.shareEvents),
+    path('setting/', views.setting,name='setting'),
 
     # path('login/', views.index,name='login'),
 

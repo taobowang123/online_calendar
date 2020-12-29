@@ -11,8 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
-
 </head>
 
 <body>
@@ -22,10 +20,15 @@
         <div class="row" id="myNavBar">
             <div class="col-sm-7">
                 <!--Search Bar with find and clear buttons-->
-                <form class="form-inline" method="get" action="searchDB" id="searchBar">
-                    <input type="text" placeholder="Search List or Task" id="searchItem" class="form-control" name="search">
-                    <button class="btn btn-sm btn-secondary" type="submit" onclick="location.href='/search/?uid={{ uid }}" id="find_button" form="searchBar">Find</button>
+                <form class="form-inline" method="post" action="/searchEvents/" id="searchBar">
+                    {% csrf_token %}
+                    <input type="text" placeholder="Search List or Events" id="searchItem" class="form-control" name="search">
+                    <button class="btn btn-sm btn-secondary" type="submit" id="find_button" form="searchBar">Find</button>
 
+                </form>
+                <form class="form-inline" method="post" action="/welcome/" id="returnbar">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-secondary" type="submit" id="return">return</button>
                 </form>
             </div>
             <div class="col-sm-3">
@@ -34,7 +37,7 @@
                     <div class="btn-group mr-2">
                         <button class="btn btn-sm btn-secondary">Welcome {{ first_name }}</button>
                         <button class="btn btn-sm btn-secondary" type="button" onclick="location.href='{% url 'logout' %}'">Logout</button>
-                        <button class="btn btn-sm btn-secondary" type="button" onclick="settingsModal( '{{ username }}', '{{ surname }}', '{{ email }}' )">Settings</button>
+                        <button class="btn btn-sm btn-secondary" type="button" onclick="settingsModal( '{{ first_name }}', '{{ last_name }}', '{{ username }}' )">Settings</button>
                     </div>
                 </div>
             </div>
@@ -55,21 +58,13 @@
                 <div id="board">
 
                     <div class="row">
-                        <!-- To Do tasks-->
                         <table class="table table-striped">
-                            <!--
-                            <col style="width:15%">
-                            <col style="width:18%">
-                            <col style="width:35%">
-                            <col style="width:7%">
-                            <col style="width:7%">
-                            <col style="width:7%">
--->
                             <thead>
                                 <tr>
                                     <th>Event date</th>
                                     <th>Event title</th>
-                                    <th>Description</th>
+                                    <th>start time</th>
+                                    <th>end time</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -78,25 +73,15 @@
                                     <td>{{ record.date | date:"Y-m-d" }}</td>
                                     <td>{{ record.event }}</td>
                                     <td>{{ record.start_time }}</td>
-
+                                    <td>{{ record.end_time }}</td>
                                     <td>
-                                        <input type="hidden" value="{{ record.id }}" name="edit_val">
-                                        <input type="submit" class="btn" value="Edit" id="editEvent" data-target="#editEventModel" data-toggle="modal">
+                                        <input type="submit" class="btn" value="Edit" id="editEvent" data-target="#editEventModel" data-toggle="modal" onclick="editModal( '{{ record.id }}','{{ record.event }}')">
                                     </td>
                                     <td>
                                         <form method="post" action="/deleteEvents">
                                             {% csrf_token %}
                                             <input type="hidden" value="{{ record.id }}" name="delete_val">
                                             <input type="submit" class="btn" value="Delete">
-                                        </form>
-                                    </td>
-
-
-                                    <td>
-                                        <form method="post" action="/archive_record">
-                                            {% csrf_token %}
-                                            <input type="hidden" value="{{ record.id }}" name="archive_val">
-                                            <input type="submit" class="btn" value="Archive">
                                         </form>
                                     </td>
                                     <td>
@@ -112,19 +97,9 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-    </div>
-    <div>
-        <form action="/add_events/" method="post">
-            {% csrf_token %}
-            <button>adddddddd</button>
-        </form>
-
     </div>
 
     <!--Add Task Modal-->
@@ -132,27 +107,22 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title"><b>Add Task</b></h2>
+                    <h2 class="modal-title"><b>Add Events</b></h2>
                     <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <form action="postAddTask" method="post">
+                    <form action="/addEvents/" method="POST">
                         {% csrf_token %}
-                        <div class="row">
-                            <div class="col-sm-3">Task:</div>
-                            <div class="col-sm-9">
-                                <input type="text" name="task" id="addTaskTitle" required>
-                                <br>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3">Due by:</div>
-                            <div class="col-sm-9">
-                                <input type="text" name="due" id="addTaskDue" required>
-                                <br>
-                                <br>
-                            </div>
-                        </div>
+                        <h2 style="font-size:20px">Events:</h2>
+                        <input type="text" name="Events" id="addTaskTitle" required>
+                        <br>
+                        <h2 style="font-size:20px">date:</h2>
+                        <input type="date" id="predict-date" name="date" value="2021-01-01" style="font-size:20px">
+                        <h2 style="font-size:20px">start time - end time:</h2>
+                        <input type="time" id="predict-time" name="starttime" value="13:30" min="05:00" max="23:00" required style="font-size:20px">
+                        <input type="time" id="predict-time" name="endtime" value="13:30" min="05:00" max="23:00" required style="font-size:20px">
+                        <br>
+                        <br>
                         <input type="submit" value="Add">
                     </form>
                 </div>
@@ -166,28 +136,25 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title"><b>Edit Events</b></h2>
+                    <p>{{ record.id }}</p>
                     <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editTaskForm" method="post" csrf-token="{{ csrf_token }}">
+                    <form action="/editEvents/" method="POST" id="eventID">
                         {% csrf_token %}
-                        <div class="row">
-                            <div class="col-sm-3">Events:</div>
-                            <div class="col-sm-9">
-                                <input type="text" name="task" name="task" id="editTaskTitle" required>
-                                <br>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3">Due by:</div>
-                            <div class="col-sm-9">
-                                <input type="text" name="due" id="editTaskDue" required>
-                                <br>
-                                <br>
-                            </div>
-                        </div>
-                        <input type="hidden" name="timestamp" id="taskTimestamp" value="">
-                        <input type="submit" value="Update" data-dismiss="#editTaskmodal">
+                        <h2 style="font-size:20px">Events:</h2>
+                        <input type="text" name="Events" id="editEventtitle" required>
+                        <br>
+                        <h2 style="font-size:20px">date:</h2>
+                        <input type="date" id="eventdate" name="date" value="2021-01-01" style="font-size:20px">
+                        <h2 style="font-size:20px">start time - end time:</h2>
+                        <input type="time" id="starttime" name="starttime" value="13:30" min="05:00" max="23:00" required style="font-size:20px">
+                        <input type="time" id="endtime" name="endtime" value="13:30" min="05:00" max="23:00" required style="font-size:20px">
+                        <input type="hidden" name="ID" id="eventttID" required>
+                        <br>
+                        <br>
+                        <input type="submit" value="Update" id="eventID">
+
                     </form>
                 </div>
             </div>
@@ -311,9 +278,12 @@
 
 
 
+    <script type="text/javascript" src="../static/js/my_jquery_functions.js" charset="UTF-8"></script>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+
 </body>
 
 </html>
