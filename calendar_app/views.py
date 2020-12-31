@@ -2,7 +2,6 @@ from django.contrib.auth import login, authenticate,logout
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 from calendar_app.models import Events
 
 def index(request):
@@ -15,7 +14,7 @@ def index(request):
         login(request, user)
         return redirect('/')
     else:
-        return render(request, 'index.html', {'msg':'wrong password'})
+        return render(request, 'registration/login.html', {'msg':'wrong password or wrong user name'})
 
 @login_required
 def welcome(request):
@@ -109,14 +108,15 @@ def shareEvents(request):
         title = request.POST['shareeventstitle']
         start_time = request.POST['shareeventsstarttime']
         end_time = request.POST['shareeventsendtime']
-        user =User.objects.get(username=target_user)
-        Events.objects.create(
-            user=user,
-            date=date,
-            event=title,
-            start_time=start_time,
-            end_time=end_time
-        )
+        if User.objects.filter(username=target_user):
+            user = User.objects.get(username=target_user)
+            Events.objects.create(
+                user=user,
+                date=date,
+                event=title,
+                start_time=start_time,
+                end_time=end_time
+            )
     return redirect('/')
 
 @login_required

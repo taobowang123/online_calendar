@@ -15,6 +15,7 @@
 
 <body class="text-center">
     <div id="container">
+        <div style="color: red; "><b>{{msg}}</b></div>
         <form id="loginForm" action="/accounts/login/" method="POST" class="form-signin">
             {% csrf_token %}
             <h1 class="h3 mb-3 font-weight-normal">Sign in to your account</h1>
