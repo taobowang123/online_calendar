@@ -9,10 +9,10 @@ urlpatterns = [
     path('deleteEvents/', views.deleteEvents,name='deleteEvents'),
     path('editEvents/', views.editEvents,name='editEvents'),
     path('searchEvents/', views.searchEvents,name='searchEvents'),
-    path('shareEvents/', views.shareEvents),
-    path('setting/', views.setting,name='setting'),
-
-    # path('login/', views.index,name='login'),
+    path('shareEvents/', views.shareEvents,name='shareEvents'),
+    path('settingsInfo/', views.settingsInfo,name='settingsInfo'),
+    path('accounts/logout/', views.logout_view,name='logout'),
+    path('accounts/login/', views.index,name='login'),
 
     # path('logout/', views.logout, name='logout'),
 
